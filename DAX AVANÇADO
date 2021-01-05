@@ -1,0 +1,252 @@
+Faturamento em 1 Ano = 
+    SUMX(
+        VALUES('Calendário'[Início do Ano]),
+        [Faturamento Total]
+    )
+
+--================================================================--
+
+Faturamento em 1 Mês = 
+  SUMX( 
+  VALUES('Calendário'[Início do Mês]),
+  [Faturamento Total]
+  )
+
+--================================================================--
+
+Máx Faturado 1 Ano = 
+  MAXX(
+  VALUES('Calendário'[Início do Ano]),
+  [Faturamento Total]
+  )
+  
+  --================================================================--
+
+  Máx Faturado 1 Mes = 
+MAXX(
+  VALUES('Calendário'[Início do Mês]),
+  [Faturamento Total]
+)
+
+--================================================================--
+
+Máx Faturado 1 Semana = 
+MAXX(
+ VALUES('Calendário'[Nome do Dia]),
+ [Faturamento Total]
+)
+
+--================================================================--
+
+Máx Faturado 1 trimestre = 
+MAXX(
+    VALUES('Calendário'[Início do Trimestre]),
+    [Faturamento Total]
+)
+
+--================================================================--
+  
+  
+% de Vendas = 
+ var TotalVendas = [Total Vendas]
+ 
+ var TotalVendasFixa = 
+    CALCULATE(
+        [Total Vendas],
+          ALLSELECTED('Base Vendas')
+    )
+return  
+         divide(TotalVendas,TotalVendasFixa)
+
+--================================================================--
+
+% Devoluções = [Total Devoluções] / [Total Vendas]
+
+--===============================================================--
+
+% Marcas dentro meta devoluções = 
+var TotalDentroMeta =
+COUNTROWS(
+ FILTER(
+   VALUES('Cadastro Produtos'[Nome da Marca]),
+   [% Devoluções] <= 0.0115
+ )
+)
+var TotalMarcas = DISTINCTCOUNT('Cadastro Produtos'[Nome da Marca])
+return 
+
+DIVIDE(TotalDentroMeta,TotalMarcas)
+
+--===============================================================--
+
+
+Custo Total = SUMX(
+    'Base Vendas',
+    'Base Vendas'[Quantidade Vendida] * 'Base Vendas'[Custo Unitario]
+)
+
+--================================================================--
+
+
+Fat Contoso 2018 = 
+ CALCULATE(
+     [Faturamento Total],
+         'Cadastro Produtos'[Nome da Marca] = "Contoso", 'Calendário'[Ano] = 2018
+ )
+
+  
+--================================================================--
+
+Fat Contoso ou Litware = 
+   CALCULATE(
+       [Faturamento Total],
+       'Cadastro Produtos'[Nome da Marca] in 
+       {
+           "Contoso","Litware"
+           }
+    
+   )
+
+--================================================================--
+
+Faturamento Total = 
+    SUMX(
+        'Base Vendas',
+        'Base Vendas'[Quantidade Vendida]*'Base Vendas'[Preco Unitario]
+    )
+
+
+--================================================================--
+
+
+Lucro Total = [Faturamento Total]-[Custo Total]
+
+--================================================================--
+
+Margem de Lucro = [Lucro Total] / [Faturamento Total]
+
+--================================================================--
+
+Máximo Faturado 1 mes = 
+     MAXX(
+         VALUES('Calendário'[Início do Mês]),
+         [Faturamento Total]
+     )
+    
+--================================================================--
+    
+    
+Máximo Gasto por um cliente em um ano = 
+   MAXX(
+         CROSSJOIN(
+    VALUES('Cadastro Clientes'[ID Cliente]),
+    VALUES('Calendário'[Ano])
+),
+[Faturamento Total]
+)
+
+--================================================================--
+
+Média Faturamento Anual = 
+    AVERAGEX(
+        VALUES('Calendário'[Ano]),
+        [Faturamento Total]
+    )
+
+--================================================================--
+
+
+Media Faturamento mensal = 
+   AVERAGEX(
+       VALUES('Calendário'[Início do Mês]),
+       [Faturamento Total]
+   )
+   
+ --================================================================--
+  
+ Media Faturamento no mes = 
+AVERAGEX(
+CROSSJOIN(
+    VALUES('Cadastro Lojas'[Nome da Loja]),
+    VALUES('Calendário'[Início do Mês])
+),
+[Faturamento Total] 
+)
+
+--================================================================--
+
+Percentual Meses Acima Meta = 
+   var Meta = 200000000
+   var TotalMeses = DISTINCTCOUNT('Calendário'[Início do Mês])
+   var TotalMesesAcimaMeta = 
+
+  COUNTROWS(
+     FILTER(
+         VALUES('Calendário'[Início do Mês]),
+               [Faturamento Total] > Meta
+     )
+  )
+
+  return
+   
+DIVIDE(TotalMesesAcimaMeta,TotalMeses)
+
+--================================================================--
+
+
+Qtd Vendas > 1000 = 
+        COUNTX(
+            FILTER('Base Vendas',
+            [Faturamento Total] > 100
+            ),
+            'Base Vendas'[Quantidade Vendida]
+        )
+   
+   
+ --================================================================--
+  
+Total Dev Audio + Computador 2018 = 
+
+CALCULATE(
+    [Total Devoluções],
+    'Cadastro Subcategorias'[Categoria do Produto] in {
+        "Áudio","Computador"
+        },
+    'Calendário'[Ano] = 2018
+
+)
+
+--================================================================--
+
+ Devoluções = SUM('Base Vendas'[Quantidade Devolvida])
+ 
+--================================================================--
+
+ Total Vendas = SUM('Base Vendas'[Quantidade Vendida])
+ 
+--================================================================--
+
+ Total Vendas Audio Lojas Online = 
+    CALCULATE(
+        [Total Vendas],
+        'Cadastro Subcategorias'[Categoria do Produto] = "Áudio",
+        'Cadastro Canais de Venda'[Nome do Canal] = "Online"
+    )
+
+--================================================================--
+
+
+Total Vendas Tocket > 100 = 
+    SUMX(
+        FILTER(
+            'Base Vendas',
+            'Base Vendas'[Preco Unitario] > 100
+        ), 
+        'Base Vendas'[Quantidade Vendida]
+    )
+
+
+ 
+
+
+
