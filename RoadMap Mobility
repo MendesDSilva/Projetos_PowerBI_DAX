@@ -1,0 +1,29 @@
+Inventory Costs = SUMX(dSales,dSales[Quantity]*RELATED(dGeneral_Vehicles[Inventory Costs $]))
+
+--==================================================================================================--
+
+Logistical Costs = SUMX(dSales,dSales[Quantity]*RELATED(dGeneral_Vehicles[Logistcal Costs $]))
+
+--==================================================================================================--
+
+Production Costs = SUMX(dSales,dSales[Quantity]*RELATED(dGeneral_Vehicles[Production Costs $]))
+
+--==================================================================================================--
+
+Profit Margin = [Total Profit]/[Total Billing]
+
+--==================================================================================================--
+
+Total Billing = SUMX(dSales,dSales[Quantity]*RELATED(dGeneral_Vehicles[Unit Price $]))
+
+--==================================================================================================--
+
+Total Costs = [Inventory Costs]+[Production Costs]+[Logistical Costs]
+
+--==================================================================================================--
+
+Total Profit = [Total Billing] - [Total Costs]
+
+--==================================================================================================--
+
+Total Sold = SUM(dSales[Quantity])
