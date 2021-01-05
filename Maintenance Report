@@ -1,0 +1,235 @@
+BD CNC = CALCULATE([Total Break Down],
+        FILTER(dEquipamentos,
+        CONTAINSSTRING(dEquipamentos[Nome do Equipamento],"CNC")
+        )
+) + 0
+
+--============================================================================--
+
+BD Prensa = CALCULATE([Total Break Down],
+            FILTER(dEquipamentos,
+            CONTAINSSTRING(dEquipamentos[Nome do Equipamento], "Prensa")
+            )
+) + 0
+
+--============================================================================--
+
+BD Rosqueadeira = CALCULATE([Total Break Down],
+                FILTER(dEquipamentos,
+                CONTAINSSTRING(dEquipamentos[Nome do Equipamento],"Rosqueadeira")
+                )
+) + 0 
+
+--============================================================================--
+
+BD Torno Mecânico = CALCULATE(
+            [Total Break Down],
+                FILTER(dEquipamentos,   
+CONTAINSSTRING(dEquipamentos[Nome do Equipamento],"Torno Mecânico")
+                )
+) + 0 
+
+--============================================================================--
+
+Corretiva Mês Anterior = 
+    CALCULATE(
+        [Corretiva Total],
+        DATEADD(
+            'Calendário'[Datas],-1,MONTH
+        )
+    )
+    
+--============================================================================--
+    
+    Menores Paradas = 
+    MINX('dOcorrências',
+    [Total Break Down])
+    Corretiva Total = CALCULATE([Downtime Total],'dTipo_Manutenção'[Tipo de Manutenção ] = "Corretiva")
+    
+ --============================================================================--
+ 
+    Custo Total Estoque = SUMX(
+        dMovimentacao, dMovimentacao[Movimentacao] * RELATED(dItens_Estoque[Preco])
+)
+    
+--============================================================================--
+
+   Desvio Downtime Total = STDEV.P('dOcorrências'[Tempo total Parada H])
+   
+--============================================================================--
+
+   Downtime Mês Anterior = 
+    CALCULATE( 
+        [Downtime Total],
+        DATEADD('Calendário'[Datas],-1,MONTH)
+    )
+
+--============================================================================--
+
+ Downtime Total = SUM('dOcorrências'[Tempo HP Minutos]) /60 
+ 
+ --============================================================================--
+ 
+ DT CNC = CALCULATE(
+    [Downtime Total],
+    FILTER(dEquipamentos,
+    CONTAINSSTRING(dEquipamentos[Nome do Equipamento], "CNC")
+    )
+)
+
+--============================================================================--
+
+DT Prensa = CALCULATE(
+    [Downtime Total], FILTER(dEquipamentos,
+    CONTAINSSTRING(
+    dEquipamentos[Equipamento] , "Prensa"
+    ) 
+  )
+)
+
+--============================================================================--
+
+DT Rosqueadeira = CALCULATE(
+    [Downtime Total], FILTER(dEquipamentos,
+    CONTAINSSTRING(
+    dEquipamentos[Equipamento], "Rosqueadeiras"
+    )
+  )
+)
+
+--============================================================================--
+
+DT Torno = CALCULATE(
+    [Downtime Total], FILTER(dEquipamentos,
+    CONTAINSSTRING(dEquipamentos[Equipamento] ,"Torno"
+    )
+  )
+)
+
+--============================================================================--
+
+Média de Aguardo = 
+var HtTotal = DIVIDE(
+    SUM('dOcorrências'[Tempo HT Minutos]),60)
+var Downtime = [Downtime Total]
+return
+
+AVERAGEX('dOcorrências',Downtime - HtTotal)
+
+
+--============================================================================--
+
+Menor tempo de aguardo = MINX(
+    'dOcorrências',
+    Medidas[Média de Aguardo]
+)
+
+--============================================================================--
+
+MTBF Horas = [Horas Produtivas] / [Total Break Down]
+
+--============================================================================--
+
+
+MTBOS = 
+    var HT_HorasTotaisManutencao = ROUND(SUM('dOcorrências'[Tempo HT Minutos]),0)
+    var HP_HorasTotaisMaquinaParada = round(SUM('dOcorrências'[Tempo HP Minutos]),0)
+    return
+
+    round((HP_HorasTotaisMaquinaParada - HT_HorasTotaisManutencao)/ 60 + 0,0)
+
+ --============================================================================--
+ 
+ MTTR Horas = [Downtime Total] / [Total Break Down]
+
+ --==============================================================
+ 
+ Percentual Corretiva = 
+var TotalBreakDown = CALCULATE([Total Break Down],
+        ALLSELECTED('dOcorrências'[Tipo de  Manutenção ]
+        )
+)
+var CorretivaBreakDown = CALCULATE(
+        [Total Break Down],
+          'dTipo_Manutenção'[Tipo de Manutenção ] = "Corretiva"
+)
+return
+
+DIVIDE(CorretivaBreakDown,TotalBreakDown)
+ 
+--=============================================================================--
+
+
+Percentual Preditiva = 
+
+var TotalBreakDown = 
+CALCULATE(
+    [Total Break Down],
+    ALLSELECTED('dOcorrências'[Tipo de  Manutenção ])
+)
+var TotalPreditiva = 
+CALCULATE(
+    [Total Break Down], 'dTipo_Manutenção'[Tipo de Manutenção ] = "Preditiva"
+)
+return
+
+DIVIDE(TotalPreditiva,TotalBreakDown)
+
+--=============================================================================--
+
+Percentual Preventiva = 
+var TotalBreakDown =
+CALCULATE(
+    [Total Break Down],
+    ALLSELECTED('dOcorrências'[Tipo de  Manutenção ])
+)
+var TotalPreventiva = 
+CALCULATE(
+    [Total Break Down],
+    'dTipo_Manutenção'[Tipo de Manutenção ]= "Preventiva"
+    )
+return
+
+DIVIDE(TotalPreventiva,TotalBreakDown)
+
+--=============================================================================--
+
+Performance = 'Horas Produtivas'[Horas Produtivas Value] / [Downtime Total] 
+
+--=============================================================================--
+
+Preditiva Total = CALCULATE([Downtime Total],'dTipo_Manutenção'[Tipo de Manutenção ] = "Preditiva")
+
+--============================================================================--
+
+Preventiva Total = CALCULATE([Downtime Total],'dTipo_Manutenção'[Tipo de Manutenção ] = "Preventiva")
+
+--============================================================================--
+
+Tempo médio de reparo = AVERAGEX(
+    VALUES('dOcorrências'[Ordem de Serviço]),
+        [Downtime Total])
+
+--============================================================================--
+
+Total Break Down = COUNTROWS('dOcorrências')
+
+--============================================================================--
+
+Total Manutenção (H) = ROUND(SUM('dOcorrências'[Tempo HT Minutos])/60 + 0,0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
