@@ -1,0 +1,48 @@
+% Crescimento = [PurVol Proposto] / CALCULATE([PurVol Atual],ALL('Request for Quotation'))
+
+--=======================================================================================--
+
+Cotações Abertas = DISTINCTCOUNT('Request for Quotation'[RFQC Nº])
+
+--=======================================================================================--
+
+PurVol Atual = SUMX(
+    FILTER('Request for Quotation',
+        'Request for Quotation'[Status Supplier] = "Current"),
+        'Request for Quotation'[PurVol BRL]
+)
+
+
+--=======================================================================================--
+
+PurVol Proposto = SUMX(
+    FILTER('Request for Quotation','Request for Quotation'[Status Supplier] = "Purposed"),
+    'Request for Quotation'[PurVol BRL])
+    
+    
+--=======================================================================================--
+
+    Racio Anual = SUMX(
+    VALUES('Calendário'[Início do Ano]),
+    [Racio Total]
+)
+
+--=======================================================================================--
+
+Racio Mensal = 
+    SUMX(
+        VALUES('Calendário'[Início do Mês]),
+        [Racio Total]
+    )
+
+--=======================================================================================--
+
+Racio Total = [PurVol Atual]-[PurVol Proposto] 
+
+
+--=======================================================================================--
+
+Racio Trimestral = 
+SUMX(
+    VALUES('Calendário'[Início do Trimestre]),
+    [Racio Total])
