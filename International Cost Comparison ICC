@@ -1,0 +1,29 @@
+CIF Brazil = (CALCULATE([Total CIF Price],'General'[Plant]="RBLA"))
+
+--================================================================--
+
+CIF China = CALCULATE([Total CIF Price],'General'[Plant]="RBCC")
+
+--================================================================--
+
+CIF Hungary = CALCULATE([Total CIF Price],'General'[Plant]="RBDH")
+
+--================================================================--
+
+CIF India = CALCULATE([Total CIF Price],'General'[Plant]="RBDI")
+
+--================================================================--
+
+CIF Korea = CALCULATE([Total CIF Price],'General'[Plant]="RBDK")
+
+--================================================================--
+
+CIF Mexico = CALCULATE([Total CIF Price],'General'[Plant]="RBDX")
+
+--================================================================--
+
+Lower CIF Price = MIN(General[CIF Price])
+
+--================================================================--
+
+Total CIF Price = SUM('General'[CIF Price])
