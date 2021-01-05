@@ -1,0 +1,135 @@
+% das Vendas = [Total Pedidos]/[Total Pedidos (Absoluto)]
+
+--======================================================================================================--
+
+15 dias de faturamento = CALCULATE([Faturamento Total],DATESINPERIOD('Calendário'[Data],MAX('Calendário'[Data]),-15,DAY))
+
+--======================================================================================================--
+
+Faturamento 2016 = CALCULATE([Faturamento Total],'Calendário'[Ano]=2016)
+
+--======================================================================================================--
+
+Faturamento 2017 = CALCULATE([Faturamento Total],'Calendário'[Ano]=2017)
+
+--======================================================================================================--
+
+Faturamento 2018 = CALCULATE([Faturamento Total],'Calendário'[Ano]=2018)
+
+--======================================================================================================--
+
+Faturamento Acumulado do Ano = CALCULATE([Faturamento Total],DATESYTD('Calendário'[Data]))
+
+--======================================================================================================--
+
+Faturamento do mês anterior = CALCULATE([Faturamento Total],DATEADD('Calendário'[Data],-1,MONTH))
+
+--======================================================================================================--
+
+Faturamento do mês anterior = 
+CALCULATE([Faturamento Total],DATEADD('Calendário'[Data],-1,MONTH))
+
+--======================================================================================================--
+
+Faturamento Total = SUMX('Base Vendas 2016 - 2018','Base Vendas 2016 - 2018'[Tamanho Pedido]*'Base Vendas 2016 - 2018'[Preço do Produto])
+
+--======================================================================================================--
+
+Máximo Faturado = MAXX('Base Vendas 2016 - 2018','Base Vendas 2016 - 2018'[Tamanho Pedido]*'Base Vendas 2016 - 2018'[Preço do Produto])
+
+--======================================================================================================--
+
+Média Absoluta de Faturamento = CALCULATE([Média de Faturamento],ALL('Base Vendas 2016 - 2018'))
+
+--======================================================================================================--
+
+Média Absoluta de Faturamento = CALCULATE([Média de Faturamento],ALL('Base Vendas 2016 - 2018'))
+
+--======================================================================================================--
+
+Média de Faturamento = AVERAGEX('Base Vendas 2016 - 2018','Base Vendas 2016 - 2018'[Tamanho Pedido]*'Base Vendas 2016 - 2018'[Preço do Produto])
+
+--======================================================================================================--
+
+Meta de Faturamento Mensal = [Faturamento do mês anterior]*1.05
+
+--======================================================================================================--
+
+Mínimo Faturado = MINX('Base Vendas 2016 - 2018','Base Vendas 2016 - 2018'[Tamanho Pedido]*'Base Vendas 2016 - 2018'[Preço do Produto])
+
+--======================================================================================================--
+
+Número de Vendas = COUNT('Base Vendas 2016 - 2018'[Tamanho Pedido])
+
+--======================================================================================================--
+
+Total de Pedidos Acumulado no Mês = CALCULATE([Total Pedidos],DATESMTD('Calendário'[Data]))
+
+--======================================================================================================--
+
+Total de Pedidos do Ano Anterior = CALCULATE([Total Pedidos],DATEADD('Calendário'[Data],-1,YEAR))
+
+--======================================================================================================--
+
+Total Pedidos = sum('Base Vendas 2016 - 2018'[Tamanho Pedido])
+
+--======================================================================================================--
+
+Total Pedidos (Absoluto) = CALCULATE([Total Pedidos],ALL('Base Vendas 2016 - 2018'))
+
+--======================================================================================================--
+
+Vendas Acima da Média = CALCULATE(COUNTA('Base Vendas 2016 - 2018'[Código Cliente]),
+       FILTER('Base Vendas 2016 - 2018',
+          'Base Vendas 2016 - 2018'[Tamanho Pedido]*'Base Vendas 2016 - 2018'[Preço do Produto]>[Média Absoluta de Faturamento]))
+
+--======================================================================================================--
+
+Vendas de Celular = CALCULATE([Total Pedidos],'Cadastro Produtos'[Categoria]="Celular")
+
+--======================================================================================================--
+
+Vendas High Ticket = CALCULATE([Número de Vendas],FILTER('Base Vendas 2016 - 2018','Base Vendas 2016 - 2018'[Preço do Produto]>[Média Absoluta de Preços]))
+
+--======================================================================================================--
+
+Vendas no Final de Semana = CALCULATE([Total Pedidos],'Calendário'[Fim de Semana]="Fim de Semana")
+
+--======================================================================================================--
+
+% das Devoluções = [Total de Devoluções]/[Total de Devoluções (Absoluto)]
+
+--======================================================================================================--
+
+% de Produtos Devolvidos = [Total de Devoluções]/[Total Pedidos]
+
+--======================================================================================================--
+
+Média de Devoluções = AVERAGE('Base Devoluções'[Quantidade Devolvida])
+
+--======================================================================================================--
+
+Meta do % de Devoluções = 0.02
+
+--======================================================================================================--
+
+Número de Devoluções = COUNTROWS('Base Devoluções')
+
+--======================================================================================================--
+
+Percentual de Devoluções = [Total de Devoluções]/[Total Pedidos]
+
+--======================================================================================================--
+
+Quantidade de Produtos Devolvidos = DISTINCTCOUNT('Base Devoluções'[SKU])
+
+--======================================================================================================--
+
+Total de Devoluções = SUM('Base Devoluções'[Quantidade Devolvida])
+
+--======================================================================================================--
+
+Total de Devoluções (Absoluto) = CALCULATE([Total de Devoluções],ALL('Base Devoluções'))
+
+
+
