@@ -1,0 +1,9 @@
+Despesas = CALCULATE(SUM('Fluxo de Caixa'[Movimentação]),FILTER('Fluxo de Caixa','Fluxo de Caixa'[Tipo]="Saída"))
+
+--==================================================================================================================--
+
+Entradas = CALCULATE(SUM('Fluxo de Caixa'[Movimentação]),FILTER('Fluxo de Caixa','Fluxo de Caixa'[Tipo]="Entrada"))
+
+--==================================================================================================================--
+
+Saldo Total = [Entradas]-[Despesas]
